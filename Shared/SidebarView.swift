@@ -20,34 +20,25 @@ struct SidebarView: View {
     var body: some View {
         List(listItems, id: \.id, children: \.children) { menuItem in
             if menuItem.isHeader {
-                HStack {
-                    Image(systemName: menuItem.iconName ?? "")
-                    Text(menuItem.name)
-                }
+                Label(menuItem.name, systemImage: menuItem.iconName ?? "")
             } else {
-                ZStack {
-                    HStack() {
-                        Image(systemName: menuItem.iconName ?? "")
-                        Text(menuItem.name)
-                        Spacer()
-                    }
-                    if let movie = menuItem as? Movie {
-                        NavigationLink(
-                            destination: MovieView(movie: movie),
-                            label: {
-                                EmptyView()
-                            })
-                    } else {
-                        let movies = MovieStore.movies(for: Genre(rawValue: menuItem.name)) ?? MovieStore.allMovies
-                        NavigationLink(
-                            destination: MoviesView(movies: movies),
-                            label: {
-                                EmptyView()
-                            })
-                    }
+                if let movie = menuItem as? Movie {
+                    NavigationLink(
+                        destination: MovieView(movie: movie),
+                        label: {
+                            Label(menuItem.name, systemImage: menuItem.iconName ?? "")
+                        })
+                } else {
+                    let movies = MovieStore.movies(for: Genre(rawValue: menuItem.name)) ?? MovieStore.allMovies
+                    NavigationLink(
+                        destination: MoviesView(movies: movies),
+                        label: {
+                            Label(menuItem.name, systemImage: menuItem.iconName ?? "")
+                        })
                 }
             }
         }
+        .listStyle(SidebarListStyle())
         .navigationTitle("Movies")
     }
 }
